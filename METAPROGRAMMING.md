@@ -67,7 +67,7 @@ function bound(elementDescriptor) {
 // Whenever a read or write is done to a field, call the render()
 // method afterwards. Implement this by replacing the field with
 // a getter/setter pair.
-function observed({kind, key, placement, descriptor, initializer}, get, set) {
+function observed({kind, key, placement, descriptor, initializer}, PrivateName) {
   assert(kind == "field");
   assert(placement == "own");
   // Create a new anonymous private name as a key for a class element
@@ -79,9 +79,9 @@ function observed({kind, key, placement, descriptor, initializer}, get, set) {
     key,
     placement,
     descriptor: {
-      get() { get(this, storage); },
+      get() { return storage.get(this); },
       set(value) {
-        set(this, storage, value);
+        storage.set(this, value);
         // Assume the @bound decorator was used on render
         window.requestAnimationFrame(this.render);
       },
